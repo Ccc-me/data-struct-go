@@ -1,9 +1,15 @@
 package queue
 
-import "container/list"
+import (
+	"github.com/Ccc-me/data-struct-go/list"
+)
 
 type Queue[T interface{}] struct {
-	list list.List
+	list list.List[T]
+}
+
+func New[T interface{}]() *Queue[T] {
+	return &Queue[T]{}
 }
 
 func (q *Queue[T]) Len() int {
@@ -18,10 +24,10 @@ func (q *Queue[T]) Push(v T) {
 	q.list.PushFront(v)
 }
 
+// 长度为0的情况下，panic
 func (q *Queue[T]) Front() T {
-	e := q.list.Back()
-	if e == nil {
-		return
+	if q.list.Len() == 0 {
+		panic("Queue[T].Front() request non-empty")
 	}
-	return
+	return q.list.Back().Value
 }

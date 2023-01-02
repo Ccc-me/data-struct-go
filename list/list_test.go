@@ -11,34 +11,51 @@ type StructForTest struct {
 }
 
 func Test_List(t *testing.T) {
+
+	testList := []*StructForTest{
+		&StructForTest{A: 1, B: "SFDDASF"},
+		&StructForTest{A: 2, B: "SFDDASF"},
+		&StructForTest{A: 3, B: "SFDDASF"},
+		&StructForTest{A: 4, B: "SFDDASF"},
+		&StructForTest{A: 5, B: "SFDDASF"},
+		&StructForTest{A: 6, B: "SFDDASF"},
+	}
+
 	l := New[*StructForTest]()
+	for i := 0; i < len(testList); i++ {
+		e := l.PushBack(testList[i])
 
-	got := &StructForTest{A: 1, B: "SFDDASF"}
-	want := l.PushBack(got).Value
-	if !reflect.DeepEqual(got, want) {
-		t.Errorf("New() = %v, want %v", got, want)
-	}
-	if !reflect.DeepEqual(l.len, 1) {
-		t.Errorf("New() = %v, want %v", l.len, 1)
-	}
-	got1 := &StructForTest{A: 1, B: "SFDDASF"}
-	want1 := l.PushBack(got1).Value
-	if !reflect.DeepEqual(got1, want1) {
-		t.Errorf("New() = %v, want %v", got1, want1)
+		got := testList[i]
+		want := e.Value
+		if !reflect.DeepEqual(got, want) {
+			t.Errorf("got = %v, want %v", got, want)
+		}
+		if !reflect.DeepEqual(l.len, i+1) {
+			t.Errorf("got = %v, want %v", l.len, i+1)
+		}
 	}
 
-	got2 := got
-	want2 := l.Front().Value
-	if !reflect.DeepEqual(got2, want2) {
-		t.Errorf("New() = %v, want %v", got2, want2)
+	i := 0
+	for f := l.Front(); f != nil; f = f.Next() {
+		if !reflect.DeepEqual(f.Value, testList[i]) {
+			t.Errorf("got = %v, want %v", f.Value, testList[i])
+		}
+		i++
 	}
 
-	got3 := got
-	want3 := l.Remove(l.Front())
-	if !reflect.DeepEqual(got3, want3) {
-		t.Errorf("New() = %v, want %v", got3, want3)
-	}
-	if !reflect.DeepEqual(l.len, 1) {
-		t.Errorf("New() = %v, want %v", l.len, 1)
+	for i := 0; i < len(testList); i++ {
+		f := l.Front()
+		if !reflect.DeepEqual(f.Value, testList[i]) {
+			t.Errorf("got = %v, want %v", f.Value, testList[i])
+		}
+
+		v := l.Remove(f)
+		if !reflect.DeepEqual(v, testList[i]) {
+			t.Errorf("got = %v, want %v", v, testList[i])
+		}
+
+		if !reflect.DeepEqual(l.len, len(testList)-(i+1)) {
+			t.Errorf("got = %v, want %v", l.len, len(testList)-(i+1))
+		}
 	}
 }

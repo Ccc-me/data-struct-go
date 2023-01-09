@@ -27,14 +27,14 @@ func (q *Queue[T]) Push(v T) {
 // 长度为0的情况下，panic
 func (q *Queue[T]) Front() T {
 	if q.list.Len() == 0 {
-		panic("Queue[T].Front() request non-empty")
+		panic("Queue[T].Front() require non-empty")
 	}
 	return q.list.Front().Value
 }
 
 func (q *Queue[T]) Back() T {
 	if q.list.Len() == 0 {
-		panic("Queue[T].Front() request non-empty")
+		panic("Queue[T].Front() require non-empty")
 	}
 	return q.list.Back().Value
 }

@@ -14,21 +14,14 @@ func less(a, b *StructForTest) bool {
 	return a.A < b.A
 }
 
-func check(t []*StructForTest) bool {
+func check(t *PriorityQueue[*StructForTest]) bool {
 
-	for i := 0; i < len(t); i++ {
-		i21 := 2*i + 1
-		i22 := 2*i + 2
-
-		if i22 >= len(t) {
-			break
-		} else if i22 < len(t) {
-			if !less(t[i], t[i21]) || !less(t[i], t[i22]) {
-				return false
-			}
-		} else if i21 < len(t) {
-			return less(t[i], t[i21])
+	a := -1
+	for i := 0; i < t.len(); i++ {
+		if i != 0 && a > t.Pop().A {
+			return false
 		}
+		a = t.Pop().A
 	}
 	return true
 }
@@ -44,11 +37,28 @@ func Test_PriorityQueue(t *testing.T) {
 		&StructForTest{A: 0, B: "SFDDASF"},
 	}
 
-	_ = New[*StructForTest](testList, func(a, b *StructForTest) bool {
+	newTestList := New[*StructForTest](testList, func(a, b *StructForTest) bool {
 		return a.A < b.A
 	})
 
-	if !reflect.DeepEqual(check(testList), true) {
-		t.Errorf("got = %v, want %v", check(testList), true)
+	if !reflect.DeepEqual(check(newTestList), true) {
+		t.Errorf("got = %v, want %v", check(newTestList), true)
+	}
+
+	testList = []*StructForTest{
+		&StructForTest{A: 6, B: "SFDDASF"},
+		&StructForTest{A: 5, B: "SFDDASF"},
+		&StructForTest{A: 4, B: "SFDDASF"},
+		&StructForTest{A: 3, B: "SFDDASF"},
+		&StructForTest{A: 2, B: "SFDDASF"},
+		&StructForTest{A: 1, B: "SFDDASF"},
+	}
+
+	newTestList = New[*StructForTest](testList, func(a, b *StructForTest) bool {
+		return a.A < b.A
+	})
+
+	if !reflect.DeepEqual(check(newTestList), true) {
+		t.Errorf("got = %v, want %v", check(newTestList), true)
 	}
 }
